@@ -115,10 +115,10 @@ class ProductManager{
 
     // <--------- Descomentar la funcion que se desea utilizar -------->
 
-    // productos.addProduct('Anamorphine','vela de soja',800,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337304/Whimsy/Tarjeta%20A/tarjeta_aDos_aqqaw1.jpg',1005,255)
-    // productos.addProduct('Euphoriasme','vela de soja',900,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337335/Whimsy/Tarjeta%20C/tarjeta_cDos_ckx5ka.jpg',1006,800)
-    // productos.addProduct('Nudesse','vela de soja',600,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337405/Whimsy/Tarjeta%20G/tarjeta_g_rltmno.jpg',1007,500)
-    // productos.addProduct('Morphine','vela de soja',500,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337304/Whimsy/Tarjeta%20A/tarjeta_aDos_aqqaw1.jpg',1008,45)
+    productos.addProduct('Anamorphine','vela de soja',800,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337304/Whimsy/Tarjeta%20A/tarjeta_aDos_aqqaw1.jpg',1005,255)
+    productos.addProduct('Euphoriasme','vela de soja',900,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337335/Whimsy/Tarjeta%20C/tarjeta_cDos_ckx5ka.jpg',1006,800)
+    productos.addProduct('Nudesse','vela de soja',600,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337405/Whimsy/Tarjeta%20G/tarjeta_g_rltmno.jpg',1007,500)
+    productos.addProduct('Morphine','vela de soja',500,'https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337304/Whimsy/Tarjeta%20A/tarjeta_aDos_aqqaw1.jpg',1008,45)
 
     // console.log(productos.getProducts())
 
