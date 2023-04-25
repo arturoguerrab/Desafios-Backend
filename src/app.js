@@ -1,23 +1,17 @@
-const express = require('express')
-const fs= require('fs');
-const path = "./ProductManager.txt"
+import express from 'express'
+import productRouter from './Router/products.router.js'
+import cartsRouter from './Router/carts.router.js'
 
-const app= express()
+const app = express()
 
-app.get('/products', (request,response)=> {
-    const productos = JSON.parse(fs.readFileSync(path,'utf-8'))
-    const limit = request.query.limit
+app.use (express.json())
 
-    response.send({
-        productos: productos.slice(0,limit)})
-})
-
-app.get('/products/:pid', (request,response)=> {
-    const productos = JSON.parse(fs.readFileSync(path,'utf-8'))
-    const pid = request.params.pid
-    const result = productos.find (item => item.id == pid)
-    response.send(result)
-})
+app.use('/api/products', productRouter)
+app.use('/api/carts', cartsRouter)
 
 
-app.listen(8080, () =>{ })
+
+
+
+app.listen(8080, () =>{console.log('server up') })
+
