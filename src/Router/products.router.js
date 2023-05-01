@@ -1,11 +1,12 @@
 import { Router } from "express";
 import Manager from "../Manager/ProductManager.js";
+import { io } from "socket.io-client"
+
 
 const router = Router()
 
 
 router.get('/', (req,res)=> {
-
     const productos = Manager.getProducts()
     const limit = req.query.limit || productos.length
     
@@ -52,6 +53,8 @@ router.get('/:pid', (req,res)=> {
 })
 
 router.post('/', (req,res) => {
+    const socket= io('http://localhost:8080')
+
     const product = req.body
 
     let {title,description,code,price,status,stock,category,thumbnails} = product
@@ -67,6 +70,9 @@ router.post('/', (req,res) => {
 
 
     if(action===true){
+
+        socket.emit('change' , Manager.getProducts())
+
         return res.status(201).send({
             status: 'success',
             message: 'producto agregado con exito'
@@ -82,14 +88,14 @@ router.post('/', (req,res) => {
 })
 
 router.put('/:pid', (req,res) => {
-
+    const socket= io('http://localhost:8080')
     const pid = req.params.pid
     const product = req.body
     
-    if(product.id){
+    if(product.id || product.code){
         return res.status(400).send({
             status: 'error',
-            message: 'No se puede modificar el id del producto'
+            message: 'No se puede modificar el id o el code del producto'
         })
     }
 
@@ -109,6 +115,7 @@ router.put('/:pid', (req,res) => {
             message: 'producto no existe'
         })}
 
+    socket.emit('change' , Manager.getProducts())
     res.status(201).send({
         status: 'success',
         message: 'producto modificado con exito'
@@ -117,6 +124,7 @@ router.put('/:pid', (req,res) => {
 })
 
 router.delete('/:pid', (req,res) => {
+    const socket= io('http://localhost:8080')
     const pid = req.params.pid
     
     if(isNaN(pid) || pid <= 0){
@@ -135,6 +143,7 @@ router.delete('/:pid', (req,res) => {
         })
     }
 
+    socket.emit('change' , Manager.getProducts())
     res.status(200).send({
         status: 'success',
         message: 'producto eliminado con exito'

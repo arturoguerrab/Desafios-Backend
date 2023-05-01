@@ -1,12 +1,12 @@
 [
 	{
 		"id": 1,
-		"title": "Modificada candle",
+		"title": "Anamorphine",
 		"description": "Peonías y Rosas Damascenas + Frambuesas",
 		"code": "1001",
-		"price": 777,
+		"price": 798,
 		"status": true,
-		"stock": 60,
+		"stock": 70,
 		"category": "overose",
 		"thumbnails": [
 			"https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337304/Whimsy/Tarjeta%20A/tarjeta_a_i1grfh.jpg",
@@ -76,7 +76,7 @@
 	},
 	{
 		"id": 6,
-		"title": "New candle",
+		"title": "Croissant",
 		"description": "Higos, Pulpa de Melocotón, Leche de Coco y Cedro",
 		"code": "1006",
 		"price": 500,
