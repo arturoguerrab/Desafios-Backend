@@ -1,13 +1,15 @@
 import { Router } from "express";
-import Manager from "../Manager/ProductManager.js";
+import Manager from "../DAO/Manager.MongoDB/ProductManager.js";
 import { io } from "socket.io-client"
 
 
 const router = Router()
 
 
-router.get('/', (req,res)=> {
-    const productos = Manager.getProducts()
+router.get('/', async(req,res)=> {
+
+    const productos = await Manager.getProducts()
+
     const limit = req.query.limit || productos.length
     
     if(isNaN(limit) || limit <= 0){
@@ -29,7 +31,7 @@ router.get('/', (req,res)=> {
         productos: productos.slice(0,limit)})
 })
 
-router.get('/:pid', (req,res)=> {
+router.get('/:pid', async (req,res)=> {
     const pid = req.params.pid
 
     if(isNaN(pid) || pid <= 0){
@@ -39,7 +41,7 @@ router.get('/:pid', (req,res)=> {
         })
     }
 
-    const producto = Manager.getProductById(pid)
+    const producto = await Manager.getProductById(pid)
 
     if(producto===false){
         return res.status(404).send({
@@ -52,7 +54,7 @@ router.get('/:pid', (req,res)=> {
         producto: producto})
 })
 
-router.post('/', (req,res) => {
+router.post('/', async (req,res) => {
     const socket= io('http://localhost:8080')
 
     const product = req.body
@@ -66,12 +68,12 @@ router.post('/', (req,res) => {
         })
     }
     
-    let action = Manager.addProduct(product)
+    let action = await Manager.addProduct(product)
 
 
     if(action===true){
 
-        socket.emit('change' , Manager.getProducts())
+        socket.emit('change' , await Manager.getProducts())
 
         return res.status(201).send({
             status: 'success',
@@ -87,10 +89,11 @@ router.post('/', (req,res) => {
 
 })
 
-router.put('/:pid', (req,res) => {
+router.put('/:pid', async (req,res) => {
     const socket= io('http://localhost:8080')
     const pid = req.params.pid
     const product = req.body
+    console.log(product)
     
     if(product.id || product.code){
         return res.status(400).send({
@@ -107,7 +110,7 @@ router.put('/:pid', (req,res) => {
     }
 
 
-    let action = Manager.updateProduct(pid,product)
+    let action = await Manager.updateProduct(pid,product)
 
     if(action===false){
         return res.status(404).send({
@@ -115,7 +118,7 @@ router.put('/:pid', (req,res) => {
             message: 'producto no existe'
         })}
 
-    socket.emit('change' , Manager.getProducts())
+    socket.emit('change' , await Manager.getProducts())
     res.status(201).send({
         status: 'success',
         message: 'producto modificado con exito'
@@ -123,18 +126,19 @@ router.put('/:pid', (req,res) => {
 
 })
 
-router.delete('/:pid', (req,res) => {
+router.delete('/:pid', async (req,res) => {
+
     const socket= io('http://localhost:8080')
     const pid = req.params.pid
     
     if(isNaN(pid) || pid <= 0){
         return res.status(404).send({
             status: 'error',
-            message: 'la propiedad pid (Product ID) debe ser un numero mayor o igual a 0'
+            message: 'la propiedad pid (Product ID) debe ser un numero mayor a 0'
         })
     }
     
-    const action = Manager.deleteProduct(pid)
+    const action = await Manager.deleteProduct(pid)
 
     if(action===false){
         return res.status(404).send({
@@ -143,7 +147,7 @@ router.delete('/:pid', (req,res) => {
         })
     }
 
-    socket.emit('change' , Manager.getProducts())
+    socket.emit('change' , await Manager.getProducts())
     res.status(200).send({
         status: 'success',
         message: 'producto eliminado con exito'
