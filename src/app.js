@@ -2,6 +2,7 @@ import express from 'express'
 import productRouter from './Router/products.router.js'
 import cartsRouter from './Router/carts.router.js'
 import viewsRouter from './Router/views.router.js'
+import messagesRouter from './Router/messages.router.js'
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
@@ -10,11 +11,12 @@ const app = express()
 
 app.use (express.json())
 app.use(express.static(__dirname+'/public'))
-// app.use (express.urlencoded())
+app.use (express.urlencoded())
 
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/', viewsRouter)
+app.use('/chat', messagesRouter)
 
 
 app.engine('handlebars', handlebars.engine())
