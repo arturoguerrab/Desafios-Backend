@@ -88,5 +88,19 @@
 			"https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337351/Whimsy/Tarjeta%20D/tarjeta_dDos_kugwwi.jpg",
 			"https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337351/Whimsy/Tarjeta%20D/tarjeta_dTres_fgmmdn.jpg"
 		]
-	}
+	},
+	{
+		"title": "New candle",
+		"description": "Higos, Pulpa de Melocotón, Leche de Coco y Cedro",
+		"code": "1007",
+		"price": 500,
+		"status": true,
+		"stock": 89,
+		"category": "shrine",
+		"thumbnails": [
+		  "https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337350/Whimsy/Tarjeta%20D/tarjeta_d_mcvnjb.jpg",
+		  "https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337351/Whimsy/Tarjeta%20D/tarjeta_dDos_kugwwi.jpg",
+		  "https://res.cloudinary.com/dbwomkmnq/image/upload/v1676337351/Whimsy/Tarjeta%20D/tarjeta_dTres_fgmmdn.jpg"
+		]
+	  }
 ]

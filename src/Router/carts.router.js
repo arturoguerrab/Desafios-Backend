@@ -1,9 +1,9 @@
 import { Router } from "express";
-import CManager from "../Manager/CartManager.js";
+import CManager from "../DAO/Manager.MongoDB/CartManager.js";
 
 const router = Router()
 
-router.post('/', (req,res) => {
+router.post('/', async (req,res) => {
     
     CManager.CreateCart()
     
@@ -15,7 +15,7 @@ router.post('/', (req,res) => {
     
 )
 
-router.get('/:cid', (req,res)=> {
+router.get('/:cid', async (req,res)=> {
     const cid = req.params.cid
 
     if(isNaN(cid) || cid <= 0){
@@ -25,9 +25,9 @@ router.get('/:cid', (req,res)=> {
         })
     }
 
-    const carrito = CManager.GetCartById(cid)
+    const carrito = await CManager.GetCartById(cid)
 
-    if(carrito===false){
+    if(carrito==false){
         return res.status(404).send({
             status: 'error',
             message: `Carrito ${cid} no existe`
@@ -35,10 +35,10 @@ router.get('/:cid', (req,res)=> {
     }
 
     res.status(200).send({
-        producto: carrito.products})
+        Cart: carrito})
 })
 
-router.post('/:cid/product/:pid', (req,res) => {
+router.post('/:cid/product/:pid', async (req,res) => {
     const cid = req.params.cid
     const pid = req.params.pid
 
@@ -50,7 +50,7 @@ router.post('/:cid/product/:pid', (req,res) => {
     }
 
     
-    let action = CManager.AddToCart(cid,pid)
+    let action = await CManager.AddToCart(cid,pid)
 
     if(action===false){
         return res.status(404).send({

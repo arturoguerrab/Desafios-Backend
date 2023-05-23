@@ -1,12 +1,12 @@
 import fs from 'fs'
-import PManager from "../Manager/ProductManager.js";
+import PManager from "./ProductManager.js";
 
 
 class CartManager{
 
     #carts
     constructor() {
-        this.path = "./Data/carts.json"
+        this.path = "./src/Data/carts.json"
         this.#carts = [];
     }
 
