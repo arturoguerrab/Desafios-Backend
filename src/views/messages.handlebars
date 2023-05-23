@@ -1,0 +1,19 @@
+<h1>Envia un mensaje</h1>
+
+<form action="/chat" method="post">
+    user:<input type="email" name="user">
+    messages:<input type="text" name="messages">
+
+    <input type="submit" value="enviar">
+
+</form>
+
+<section id="list">
+    {{#each historial}}
+        <hr/>
+        <h2>user: {{this.user}}</h2>
+        <p><strong>mnesaje</strong>: {{this.message}}</p>
+        <hr/>
+        
+    {{/each}}
+</section>
