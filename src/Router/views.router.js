@@ -5,8 +5,6 @@ import mongoose from "mongoose";
 import CManager from "../DAO/Manager.MongoDB/CartManager.js";
 
 
-
-
 const router = Router()
 
 const url = "mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net/ecommerce"
