@@ -68,6 +68,42 @@ class ProductManager{
         return false
     }
 
+    getProductsQuerys = async(limit,sort,page,query) => {
+        await connectDB()
+
+        let getAll = await productsModel.paginate({},{limit,page})
+        
+        if(getAll != ''){
+        
+            if(sort==='asc' && query==''){
+                getAll = await productsModel.paginate({},{limit,page, sort:{price:'asc'}})
+            }
+            if(sort==='desc' && query==''){
+                getAll = await productsModel.paginate({},{limit,page, sort:{price:'desc'}})
+            }
+            
+            if(query!=''){
+                getAll = await productsModel.paginate({category: `${query}`},{limit,page})
+
+                if(sort==='asc'){
+                    getAll = await productsModel.paginate({category: `${query}`},{limit,page, sort:{price:'asc'}})
+                }
+                if(sort==='desc'){
+                    getAll = await productsModel.paginate({category: `${query}`},{limit,page, sort:{price:'desc'}})
+                }
+
+                await mongoose.connection.close()
+                return getAll
+            }
+
+            await mongoose.connection.close()
+            return getAll
+        }
+
+        await mongoose.connection.close()
+        return false
+    }
+
     getProductById = async(id)=> {
 
         await connectDB()
@@ -128,5 +164,7 @@ class ProductManager{
     
 }
 const Manager = new ProductManager()
+
+// console.log(Manager.getProductsQuerys(3,'desc',1,'overose'));
 
 export default Manager

@@ -8,10 +8,14 @@ const router = Router()
 
 router.get('/', async(req,res)=> {
 
-    const productos = await Manager.getProducts()
-
-    const limit = req.query.limit || productos.length
     
+    const limit = req.query.limit || 10
+    const page = req.query.page || 1
+    const query = req.query.query || ''
+    const sort = req.query.sort || ''
+    
+    const productos = await Manager.getProductsQuerys(limit,sort,page,query)
+
     if(isNaN(limit) || limit <= 0){
         return res.status(404).send({
             status: 'error',
@@ -27,8 +31,20 @@ router.get('/', async(req,res)=> {
     }
 
 
+
     res.status(200).send({
-        productos: productos.slice(0,limit)})
+        status:'success',
+        payload: productos.docs,
+        totalPages: productos.totalPages,
+        prevPage: productos.prevPage,
+        nextPage: productos.nextPage,
+        page:productos.page,
+        hasPrevPage: productos.hasPrevPage,
+        hasNextPage: productos.hasNextPage,
+        prevLink: productos.hasPrevPage==false ? null : `http://localhost:8080/api/products?limit=${limit}&page=${productos.page-1}&query=${query}&sort=${sort}`,
+        nextLink: productos.hasNextPage==false ? null : `http://localhost:8080/api/products?limit=${limit}&page=${productos.page+1}&query=${query}&sort=${sort}`,
+
+    })
 })
 
 router.get('/:pid', async (req,res)=> {
