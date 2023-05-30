@@ -39,7 +39,14 @@ router.get('/realtimeproducts',async (req,res)=>{
 })
 
 router.get('/products', async (req,res)=>{ 
-    let page =parseInt (req.query.page) || 1
+    let page =req.query.page || 1
+
+    if(isNaN(page) || page <= 0){
+        return res.status(404).send({
+            status: 'error',
+            message: 'la propiedad page debe ser un numero mayor o igual a 0'
+        })
+    }
 
     await connectDB()
     let products = await productsModel.paginate({},{limit:2,page,lean:true})
@@ -57,6 +64,14 @@ router.get('/carts/:cid', async (req,res)=>{
     await connectDB()
 
     let cart = await CManager.GetCartById(cid)
+
+    if(cart ==null){
+        await mongoose.connection.close()
+        return res.status(404).send({
+            status: 'error',
+            message: 'carrito no existente'
+        })
+    }
     let products = cart.products
 
     res.render('cart',{products:products,cid:cid})
