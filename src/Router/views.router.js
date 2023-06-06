@@ -48,10 +48,15 @@ router.get('/products', async (req,res)=>{
 
     await connectDB()
     let products = await productsModel.paginate({},{limit:2,page,lean:true})
-    products.prevLink= products.hasPrevPage ? `http://localhost:8080/products?page=${products.prevPage}`:'',
-    products.nextLink= products.hasNextPage ? `http://localhost:8080/products?page=${products.nextPage}`:'',
+    products.prevLink= products.hasPrevPage ? `http://localhost:8080/products?page=${products.prevPage}`:''
+    products.nextLink= products.hasNextPage ? `http://localhost:8080/products?page=${products.nextPage}`:''
 
-    res.render('products',{products:products})
+    if (req.session.user){
+        return res.render('products',{products:products, user:req.session.user})
+    }
+
+    res.render('errors/login_error')
+
     await mongoose.connection.close()
 
 })
