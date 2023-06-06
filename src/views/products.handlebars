@@ -1,21 +1,27 @@
 <div>
+    <h1>Bienvenido {{user.first_name}} {{user.last_name}} </h1>
+    <p>Rol: <strong>{{user.rol}}</strong></p>
     <section>
-    {{#each products.docs}}
-        <h2>Title: {{this.title}}</h2>
-        <p><strong>Description</strong>: {{this.description}}</p>
-        <p><strong>Code</strong>: {{this.code}}</p>
-        <p><strong>Price</strong>: ${{this.price}}</p>
-        <p><strong>Stock</strong>: {{this.stock}}</p>
-        <p><strong>Category</strong>: {{this.category}}</p>
-        <button>Añadir al carrito</button>
-        <hr>
-    {{/each}}
-    {{#if products.hasPrevPage}}
-        <a href={{products.prevLink}}>Anterior</a>
-    {{/if}}
-        <p>{{products.page}}</p>
-    {{#if products.hasNextPage}}
-        <a href={{products.nextLink}}>Siguiente</a>
-    {{/if}}
-</section>
+        <h2>Productos:</h2><hr>
+        {{#each products.docs}}
+            <h3>Title: {{this.title}}</h3>
+            <p><strong>Description</strong>: {{this.description}}</p>
+            <p><strong>Code</strong>: {{this.code}}</p>
+            <p><strong>Price</strong>: ${{this.price}}</p>
+            <p><strong>Stock</strong>: {{this.stock}}</p>
+            <p><strong>Category</strong>: {{this.category}}</p>
+            <button>Añadir al carrito</button>
+            <hr>
+        {{/each}}
+        {{#if products.hasPrevPage}}
+            <a href={{products.prevLink}}>Anterior</a>
+        {{/if}}
+            <p>Pagina: {{products.page}}</p>
+        {{#if products.hasNextPage}}
+            <a href={{products.nextLink}}>Siguiente</a>
+        {{/if}}
+    </section>
+    <br>
+    <hr>
+    <a href="http://localhost:8080/session/logout"><button>logout</button></a>
 </div>
