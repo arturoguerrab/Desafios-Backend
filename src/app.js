@@ -9,6 +9,10 @@ import MongoStore from 'connect-mongo'
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
+import passport from 'passport'
+import initializePassport from './config/passport.config.js'
+import mongoose from 'mongoose'
+
 
 const app = express()
 
@@ -21,6 +25,10 @@ app.use(session({
     resave:true,
     saveUninitialized:true
 }))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 app.use (express.json())
@@ -39,19 +47,33 @@ app.set('views',__dirname+'/views')
 app.set('view engine', 'handlebars')
 
 
+const url = "mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net/ecommerce"
 
-const httpServer = app.listen(8080, () =>{console.log('server up') })
 
-const io = new Server(httpServer)
+mongoose.set("strictQuery",false)
 
-io.on('connection', (socket)=>{
-    console.log('cliente socket conectado...')
+try {
+    await mongoose.connect(url)
     
-    socket.on('change', (data)=>{
-        io.emit('products', data)
+    console.log("DB Connected");
+    const httpServer = app.listen(8080, () =>{console.log('server up') })
+    const io = new Server(httpServer)
+    
+    io.on('connection', (socket)=>{
+        console.log('cliente socket conectado...')
+        
+        socket.on('change', (data)=>{
+            io.emit('products', data)
+        })
     })
-    
-    
-})
+        
+}
+
+catch{
+    console.log("No se puede conectar a la DB");
+}
+
+
+
 
 

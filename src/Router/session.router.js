@@ -1,38 +1,17 @@
 import { Router } from "express";
-import userModel from "../DAO/Models/user.model.js";
-import mongoose from "mongoose";
+import passport from "passport";
 
 const router = Router()
-
-const url = "mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net/ecommerce"
-
-const connectDB = async()=>{
-
-    mongoose.set("strictQuery",false)
-    try {
-        await mongoose.connect(url)
-        
-        console.log("DB Connected");
-    }
-    catch{
-        console.log("No se puede conectar a la DB");
-    }
-}
 
 router.get('/register', (req, res)=>{
     res.render('sessions/register')
 })
 
-router.post('/register', async (req, res)=>{
-    await connectDB()
-    const userNew = req.body
-    const duplicatedUser = await userModel.findOne({email: userNew.email}).lean().exec()
-    if(duplicatedUser){
-        return res.render('errors/register_error')
-    }
-    const user = new userModel(userNew)
-    await user.save()
-    await mongoose.connection.close()
+router.get('/errors/register_error', (req, res)=>{
+    res.render('errors/register_error')
+})
+
+router.post('/register', passport.authenticate('register', {failureRedirect: 'errors/register_error'}), async (req, res)=>{
     res.redirect('/session/login')
 })
 
@@ -40,17 +19,19 @@ router.get('/login', (req, res)=>{
     res.render('sessions/login')
 })
 
-router.post('/login', async (req, res)=>{
-    await connectDB()
-    const {email,password} = req.body
-    const user = await userModel.findOne({ $and:[ {email: email}, {password:password}]}).lean().exec()
+router.get('/errors/login_error', (req, res)=>{
+    res.render('errors/login_error')
+})
+
+router.post('/login', passport.authenticate('login', {failureRedirect:'errors/login_error'}), async (req, res)=>{
 
 
-    if(!user){
-        return res.status(401).render('errors/base',{error: 'Error en Email o Contraseña'})
+    if(!req.user){
+        return res.status(401).render('errors/base',{error: 'Email no registrado '})
     }
-    req.session.user = {first_name: user.first_name, last_name: user.last_name, rol:user.rol}
-    await mongoose.connection.close()
+    
+    req.session.user = {first_name: req.user.first_name, last_name: req.user.last_name, rol:req.user.rol}
+    
     res.redirect('/products')
 })
 
@@ -62,6 +43,15 @@ router.get('/logout', async (req, res)=>{
             res.redirect('/session/login')
         }
     })
+})
+
+router.get('/github', passport.authenticate('github', {scope:['user:email']}), (req, res)=>{})
+
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect: 'login'}), (req, res)=>{
+    
+    req.session.user = {first_name: req.user.first_name, rol:req.user.rol}
+    
+    res.redirect('/products')
 })
 
 export default router
