@@ -5,7 +5,8 @@ import viewsRouter from './Router/views.router.js'
 import messagesRouter from './Router/messages.router.js'
 import sessionRouter from './Router/session.router.js'
 import session from 'express-session'
-import MongoStore from 'connect-mongo'
+import cookieParser from 'cookie-parser'
+// import MongoStore from 'connect-mongo'
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
@@ -17,14 +18,16 @@ import mongoose from 'mongoose'
 const app = express()
 
 app.use(session({
-    store: MongoStore.create({
-        mongoUrl:'mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net',
-        dbName: 'session'
-    }),
+    // store: MongoStore.create({
+    //     mongoUrl:'mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net',
+    //     dbName: 'session'
+    // }),
     secret:'c0d3r',
     resave:true,
     saveUninitialized:true
 }))
+
+app.use(cookieParser())
 
 initializePassport()
 app.use(passport.initialize())

@@ -1,6 +1,7 @@
 import passport from "passport"
 import local from 'passport-local'
-import { createHash, isValidPassword } from "../utils.js"
+import passport_jwt, { ExtractJwt } from "passport-jwt"
+import { JWT_PRIVATE_KEY, createHash, extractCookie, generateToken, isValidPassword } from "../utils.js"
 import userModel from "../DAO/Models/user.model.js"
 import GitHubStrategy from 'passport-github2'
 // import userGitHubModel from "../DAO/Models/user.model.github.js"
@@ -9,6 +10,7 @@ dotenv.config()
 
 
 const LocalStrategy = local.Strategy
+const JWTStrategy = passport_jwt.Strategy
 
 const initializePassport = () => {
 
@@ -16,7 +18,7 @@ const initializePassport = () => {
         passReqToCallback: true,
         usernameField: 'email'
     }, async(req, username, password, done) => {
-        const { first_name, last_name, age, email, rol } = req.body
+        const { first_name, last_name, age, email, rol} = req.body
         try {
             const user = await userModel.findOne({ email: username })
             if (user) {
@@ -24,7 +26,7 @@ const initializePassport = () => {
                 return done(null, false)
             }
             const newUser = {
-                first_name, last_name, age, email,rol,
+                first_name, last_name, age, email,rol,cart:'id',
                 password: createHash(password)
             }
             const result = await userModel.create(newUser)
@@ -36,6 +38,7 @@ const initializePassport = () => {
     }))
 
     passport.use('login', new LocalStrategy({
+
         usernameField: 'email'
     }, async(email, password, done) => {
         try {
@@ -52,6 +55,8 @@ const initializePassport = () => {
 
             if (!isValidPassword(user, password)) return done(null, false)
 
+            const token = generateToken({first_name:user.first_name, last_name:user.last_name, email:user.email, rol:user.rol})
+            user.token = token
             return done(null, user)
         } catch(error) {
             done('error')
@@ -72,12 +77,19 @@ const initializePassport = () => {
 
             const user = await userModel.findOne({ email: profile._json.email })
 
-            if (user) return done(null, user)
+            if (user){
+                const token = generateToken({first_name:user.first_name, email:user.email, rol:user.rol})
+                user.token = token
+                return done(null, user)
+            } 
 
             const newUser = await userModel.create({
                 first_name: profile._json.name,
                 email: profile._json.email
             })
+
+            const token = generateToken({first_name:newUser.first_name, email:newUser.email, rol:newUser.rol})
+            newUser.token = token
 
             return done(null, newUser)
         } 
@@ -86,6 +98,14 @@ const initializePassport = () => {
         }
 
     }))
+
+    passport.use('current', new JWTStrategy({
+        jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
+        secretOrKey: JWT_PRIVATE_KEY
+    }, async(jwt_payload, done) => {
+        done(null, jwt_payload)
+    }))
+
 
     passport.serializeUser((user, done) => {
         done(null, user._id)
