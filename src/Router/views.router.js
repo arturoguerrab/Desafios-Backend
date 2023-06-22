@@ -2,6 +2,7 @@ import { Router } from "express";
 import Manager from "../DAO/Manager.MongoDB/ProductManager.js";
 import productsModel from "../DAO/Models/products.model.js";
 import CManager from "../DAO/Manager.MongoDB/CartManager.js";
+import { passportCall } from "../utils.js";
 
 
 const router = Router()
@@ -20,7 +21,7 @@ router.get('/realtimeproducts',async (req,res)=>{
     res.render('realTimeProducts',{products:products})
 })
 
-router.get('/products', async (req,res)=>{ 
+router.get('/products', passportCall('current') , async (req,res)=>{ 
     let page =req.query.page || 1
 
     if(isNaN(page) || page <= 0){
@@ -35,11 +36,11 @@ router.get('/products', async (req,res)=>{
     products.prevLink= products.hasPrevPage ? `http://localhost:8080/products?page=${products.prevPage}`:''
     products.nextLink= products.hasNextPage ? `http://localhost:8080/products?page=${products.nextPage}`:''
 
-    if (req.session.user){
-        return res.render('products',{products:products, user:req.session.user})
-    }
+    // if (req.user.token){
+    res.render('products',{products:products, user:req.user.user})
+    // }
 
-    res.render('errors/login_error')
+    // res.render('errors/login_error')
 
     
 

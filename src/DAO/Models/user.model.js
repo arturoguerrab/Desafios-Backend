@@ -8,9 +8,10 @@ const userSchema = new mongoose.Schema({
     email: String,
     age: Number,
     password:String,
+    cart:String,
     rol:{ 
         type:String,
-        default:'usuario'
+        default:'user'
     }
 })
 
