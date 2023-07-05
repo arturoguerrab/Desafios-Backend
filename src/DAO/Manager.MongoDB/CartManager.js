@@ -39,8 +39,7 @@ class CartManager{
         if(getAll != ''){
             const cartById = await cartsModel.findOne({id:id})
             
-            if(cartById == ''){
-            
+            if(cartById == null){
                 return false
             }
 
@@ -48,9 +47,7 @@ class CartManager{
             return cartById
         }
 
-    
         return false
-
         }
         
 

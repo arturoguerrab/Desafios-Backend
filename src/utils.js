@@ -5,10 +5,12 @@ import jwt from 'jsonwebtoken'
 import passport from 'passport'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+import dotenv from 'dotenv'
+dotenv.config()
 
 
-export const JWT_PRIVATE_KEY = 'secret'
-export const JWT_COOKIE_NAME = 'CookieToken'
+export const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY
+export const JWT_COOKIE_NAME = process.env.JWT_COOKIE_NAME
 
 export const createHash = password =>{
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))

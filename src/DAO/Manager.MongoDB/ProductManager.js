@@ -1,7 +1,4 @@
-import mongoose from "mongoose";
-
 import productsModel from "../Models/products.model.js";
-
 
 
 class ProductManager{
@@ -151,7 +148,5 @@ class ProductManager{
     
 }
 const Manager = new ProductManager()
-
-// console.log(Manager.getProductsQuerys(3,'desc',1,'overose'));
 
 export default Manager
