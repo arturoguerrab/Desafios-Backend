@@ -1,80 +1,107 @@
-import express from 'express'
-import productRouter from './Router/products.router.js'
-import cartsRouter from './Router/carts.router.js'
-import viewsRouter from './Router/views.router.js'
-import messagesRouter from './Router/messages.router.js'
-import sessionRouter from './Router/session.router.js'
-import session from 'express-session'
-import cookieParser from 'cookie-parser'
-// import MongoStore from 'connect-mongo'
-import handlebars from 'express-handlebars'
-import { Server } from 'socket.io'
-import __dirname from './utils.js'
-import passport from 'passport'
-import initializePassport from './config/passport.config.js'
-import mongoose from 'mongoose'
+// EXPRESS IMPORTS
+    import express from 'express'
+    import session from 'express-session'
+    import handlebars from 'express-handlebars'
+    import __dirname from './utils.js'
+
+// PASSPORT IMPORTS
+    import passport from 'passport'
+    import initializePassport from './config/passport.config.js'
+    import cookieParser from 'cookie-parser'
+
+// MOONGOSE IMPORTS
+    import mongoose from 'mongoose'
+    // import MongoStore from 'connect-mongo'
+
+// SOCKET IMPORTS
+    import { Server } from 'socket.io'
+
+// ENVOIREMTS VARIABLES IMPORTS
+    import dotenv from 'dotenv'
+    dotenv.config()
+
+// ROUTERS IMPORTS
+    import productRouter from './Router/products.router.js'
+    import cartsRouter from './Router/carts.router.js'
+    import viewsRouter from './Router/views.router.js'
+    import messagesRouter from './Router/messages.router.js'
+    import sessionRouter from './Router/session.router.js'
+
+// <-------------------------IMPORTS END-------------------------------------->
 
 
-const app = express()
-
-app.use(session({
-    // store: MongoStore.create({
-    //     mongoUrl:'mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net',
-    //     dbName: 'session'
-    // }),
-    secret:'c0d3r',
-    resave:true,
-    saveUninitialized:true
-}))
-
-app.use(cookieParser())
-
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
+// EXPRESS CONFIG
+    const app = express()
+    app.use (express.json())
+    app.use(express.static(__dirname+'/public'))
+    app.use (express.urlencoded())
 
 
-app.use (express.json())
-app.use(express.static(__dirname+'/public'))
-app.use (express.urlencoded())
-
-app.use('/api/products', productRouter)
-app.use('/api/carts', cartsRouter)
-app.use('/', viewsRouter)
-app.use('/chat', messagesRouter)
-app.use('/session', sessionRouter)
-
-
-app.engine('handlebars', handlebars.engine())
-app.set('views',__dirname+'/views')
-app.set('view engine', 'handlebars')
+// SESSION CONFIG
+    app.use(session({
+        // store: MongoStore.create({
+        //     mongoUrl:'mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net',
+        //     dbName: 'session'
+        // }),
+        secret:'c0d3r',
+        resave:true,
+        saveUninitialized:true
+    }))
 
 
-const url = "mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net/ecommerce"
+// COOKIES CONFIG
+    app.use(cookieParser())
 
 
-mongoose.set("strictQuery",false)
+// PASSPORT CONFIG
+    initializePassport()
+    app.use(passport.initialize())
+    app.use(passport.session())
 
-try {
-    await mongoose.connect(url)
+
+// HANDLEBARS CONFIG
+    app.engine('handlebars', handlebars.engine())
+    app.set('views',__dirname+'/views')
+    app.set('view engine', 'handlebars')
     
-    console.log("DB Connected");
-    const httpServer = app.listen(8080, () =>{console.log('server up') })
-    const io = new Server(httpServer)
-    
-    io.on('connection', (socket)=>{
-        console.log('cliente socket conectado...')
+
+
+// ROUTING CONFIG
+    app.use('/api/products', productRouter)
+    app.use('/api/carts', cartsRouter)
+    app.use('/', viewsRouter)
+    app.use('/chat', messagesRouter)
+    app.use('/session', sessionRouter)
+
+
+// MONGOOSE CONFIG
+    const url = process.env.MONGO_URI
+    mongoose.set("strictQuery",false)
+
+
+// EXPRESS AND SOCKET SERVER RUN
+    try {
+        await mongoose.connect(url)
+        console.log("DB Connected");
         
-        socket.on('change', (data)=>{
-            io.emit('products', data)
+
+        const httpServer = app.listen(8080, () =>{console.log('Listening...') })
+        const io = new Server(httpServer)
+        
+
+        io.on('connection', (socket)=>{
+
+            console.log('Socket client conected...')
+            
+            socket.on('change', (data)=>{
+                io.emit('products', data)
+            })
         })
-    })
-        
-}
-
-catch{
-    console.log("No se puede conectar a la DB");
-}
+            
+    }
+    catch{
+        console.log("ERROR TO ACCESS ON DB");
+    }
 
 
 
