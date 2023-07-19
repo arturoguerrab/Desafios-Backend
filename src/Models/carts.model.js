@@ -14,8 +14,6 @@ const productsSchema = new mongoose.Schema({
 },{_id:false})
 
 const cartsSchema = mongoose.Schema({
-
-    id: Number,
     products: {
         type:[productsSchema],
         default:[]
@@ -23,7 +21,7 @@ const cartsSchema = mongoose.Schema({
 })
 
 
-cartsSchema.pre('findOne', function(){
+cartsSchema.pre('find', function(){
     this.populate('products._id')
 })
 const cartsModel = mongoose.model(cartsCollection, cartsSchema)

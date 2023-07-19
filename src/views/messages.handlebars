@@ -12,8 +12,11 @@
     {{#each historial}}
         <hr/>
         <h2>user: {{this.user}}</h2>
-        <p><strong>mnesaje</strong>: {{this.message}}</p>
+        <p><strong>mensaje</strong>: {{this.message}}</p>
         <hr/>
         
     {{/each}}
 </section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/messages.js"></script>

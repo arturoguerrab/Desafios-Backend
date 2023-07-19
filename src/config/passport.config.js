@@ -2,7 +2,7 @@ import passport from "passport"
 import local from 'passport-local'
 import passport_jwt, { ExtractJwt } from "passport-jwt"
 import { JWT_PRIVATE_KEY, createHash, extractCookie, generateToken, isValidPassword } from "../utils.js"
-import userModel from "../DAO/Models/user.model.js"
+import userModel from "../Models/user.model.js"
 import GitHubStrategy from 'passport-github2'
 // import userGitHubModel from "../DAO/Models/user.model.github.js"
 import dotenv from 'dotenv'

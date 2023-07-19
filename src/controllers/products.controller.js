@@ -1,5 +1,5 @@
-import Manager from "../DAO/Manager.MongoDB/ProductManager.js";
 import { io } from "socket.io-client"
+import { productService } from "../repository/index.js";
 
 // CONTROLLER (GET) PARA TRAER TODOS LOS PRODUCTOS
     export const getProducts = async(req,res)=> {
@@ -10,7 +10,7 @@ import { io } from "socket.io-client"
             const query = req.query.query || ''
             const sort = req.query.sort || ''
             
-            const productos = await Manager.getProductsQuerys(limit,sort,page,query)
+            const productos = await productService.getProductsPaginate({query,limit,page,sort})
 
             if(isNaN(limit) || limit <= 0){
                 return res.status(404).send({
@@ -47,14 +47,7 @@ import { io } from "socket.io-client"
         //---------------LOGICA----------------------
             const pid = req.params.pid
 
-            if(isNaN(pid) || pid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la propiedad pid (Product ID) debe ser un numero mayor o igual a 0'
-                })
-            }
-
-            const producto = await Manager.getProductById(pid)
+            const producto = await productService.getProducts({_id:pid})
 
             if(producto===false){
                 return res.status(404).send({
@@ -85,11 +78,11 @@ import { io } from "socket.io-client"
                 })
             }
             
-            let action = await Manager.addProduct(product)
+            let action = await productService.addProduct(product)
 
         //---------------RESPUESTA-------------------
             if(action===true){
-                socket.emit('change' , await Manager.getProducts())
+                socket.emit('change' , await productService.getProducts())
 
                 return res.status(201).send({
                     status: 'success',
@@ -113,21 +106,14 @@ import { io } from "socket.io-client"
             const pid = req.params.pid
             const product = req.body
             
-            if(product.id || product.code){
+            if(product._id || product.code){
                 return res.status(400).send({
                     status: 'error',
                     message: 'No se puede modificar el id o el code del producto'
                 })
             }
 
-            if(isNaN(pid) || pid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la propiedad pid (Product ID) debe ser un numero mayor o igual a 0'
-                })
-            }
-
-            let action = await Manager.updateProduct(pid,product)
+            let action = await productService.updateProduct(pid,product)
 
         //---------------RESPUESTA-------------------
             if(action===false){
@@ -136,7 +122,7 @@ import { io } from "socket.io-client"
                     message: 'producto no existe'
                 })}
 
-            socket.emit('change' , await Manager.getProducts())
+            socket.emit('change' , await productService.getProducts())
             return res.status(201).send({
                 status: 'success',
                 message: 'producto modificado con exito'
@@ -150,14 +136,7 @@ import { io } from "socket.io-client"
             const socket= io('http://localhost:8080')
             const pid = req.params.pid
             
-            if(isNaN(pid) || pid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la propiedad pid (Product ID) debe ser un numero mayor a 0'
-                })
-            }
-            
-            const action = await Manager.deleteProduct(pid)
+            const action = await productService.deleteProduct(pid)
 
         //---------------RESPUESTA-------------------
             if(action===false){
@@ -167,7 +146,7 @@ import { io } from "socket.io-client"
                 })
             }
 
-            socket.emit('change' , await Manager.getProducts())
+            socket.emit('change' , await productService.getProducts())
             return res.status(200).send({
                 status: 'success',
                 message: 'producto eliminado con exito'

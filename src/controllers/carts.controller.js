@@ -1,9 +1,9 @@
-import CManager from "../DAO/Manager.MongoDB/CartManager.js";
+import { cartsService } from "../repository/index.js";
 
 // CONTROLLER (POST) PARA CREAR UN NUEVO CARRITO
     export const createCart= async (req,res) => {
         //---------------LOGICA----------------------
-            CManager.CreateCart()
+            cartsService.CreateCart()
 
         //---------------RESPUESTA-------------------
             return res.status(201).send({
@@ -18,15 +18,7 @@ import CManager from "../DAO/Manager.MongoDB/CartManager.js";
 
         //---------------LOGICA----------------------
             const cid = req.params.cid
-
-            if(isNaN(cid) || cid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la propiedad cid (Cart ID) debe ser un numero mayor o igual a 0'
-                })
-            }
-
-            const carrito = await CManager.GetCartById(cid)
+            const carrito = await cartsService.GetCarts({_id:cid})
 
         //---------------RESPUESTA-------------------
             if(carrito==false){
@@ -48,15 +40,8 @@ import CManager from "../DAO/Manager.MongoDB/CartManager.js";
         //---------------LOGICA----------------------
             const cid = req.params.cid
             const pid = req.params.pid
-
-            if(isNaN(cid) || cid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'las propiedades pid (Product ID) y cid (Cart ID) deben ser un numero mayor o igual a 0'
-                })
-            }
             
-            let action = await CManager.AddToCart(cid,pid)
+            let action = await cartsService.AddToCart(cid,pid)
         
         //---------------RESPUESTA-------------------
             if(action===false){
@@ -79,14 +64,7 @@ import CManager from "../DAO/Manager.MongoDB/CartManager.js";
             const pid = req.params.pid
             const cid = req.params.cid
             
-            if(isNaN(cid) || cid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'las propiedades pid (Product ID) y cid (Cart ID) deben ser un numero mayor a 0'
-                })
-            }
-            
-            const action = await CManager.DeleteProduct(cid,pid)
+            const action = await cartsService.DeleteProduct(cid,pid)
 
         //---------------RESPUESTA-------------------
             if(action===false){
@@ -108,14 +86,7 @@ import CManager from "../DAO/Manager.MongoDB/CartManager.js";
         //---------------LOGICA----------------------
             const cid = req.params.cid
             
-            if(isNaN(cid) || cid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la propiedad cid (Cart ID) debe ser un numero mayor a 0'
-                })
-            }
-            
-            const action = await CManager.DeleteAllProducts(cid)
+            const action = await cartsService.DeleteAllProducts(cid)
 
         //---------------RESPUESTA-------------------
             if(action===false){
@@ -137,16 +108,8 @@ import CManager from "../DAO/Manager.MongoDB/CartManager.js";
         //---------------LOGICA----------------------
             const cid = req.params.cid
             const products = req.body
-            
 
-            if(isNaN(cid) || cid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la propiedad cid (Cart ID) debe ser un numero mayor o igual a 0'
-                })
-            }
-
-            let action = await CManager.UpdateCart(cid,products)
+            let action = await cartsService.UpdateCart(cid,products)
             
         //---------------RESPUESTA-------------------
             if(action===false){
@@ -169,16 +132,8 @@ import CManager from "../DAO/Manager.MongoDB/CartManager.js";
             const cid = req.params.cid
             const pid = req.params.pid
             const qty = req.body
-            
 
-            if(isNaN(cid) || cid <= 0){
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'las propiedades pid (Product ID) y cid (Cart ID) deben ser un numero mayor a 0'
-                })
-            }
-
-            let action = await CManager.UpdateProductQuantity(cid,pid,qty.quantity)
+            let action = await cartsService.UpdateProductQuantity(cid,pid,qty.quantity)
 
         //---------------RESPUESTA-------------------
             if(action===false){

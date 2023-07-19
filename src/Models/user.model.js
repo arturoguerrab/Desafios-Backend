@@ -12,8 +12,9 @@ const userSchema = new mongoose.Schema({
     rol:{ 
         type:String,
         default:'user'
-    }
-})
+    }},
+    {timestamps:true}
+)
 
 mongoose.set('strictQuery',false)
 
