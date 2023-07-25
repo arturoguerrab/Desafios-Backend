@@ -1,5 +1,8 @@
 import { io } from "socket.io-client"
 import { productService } from "../repository/index.js";
+import CustomError from "../public/js/custom_errors.js";
+import { generateErrorInfo} from "../public/js/info.js";
+import EErros from "../public/js/enums.js";
 
 // CONTROLLER (GET) PARA TRAER TODOS LOS PRODUCTOS
     export const getProducts = async(req,res)=> {
@@ -72,10 +75,17 @@ import { productService } from "../repository/index.js";
             let {title,description,code,price,status,stock,category,thumbnails} = product
 
             if((!title || !description || !price || !thumbnails || !code || !stock || !status || !category )){
-                return res.status(400).send({
-                    status: 'error',
-                    message: 'producto no agregado: Faltan datos en las propiedades'
+                CustomError.createError({
+                    name: "User creation error",
+                    cause: generateErrorInfo(),
+                    message: "Error trying to create a user",
+                    code: EErros.INVALID_TYPES_ERROR
                 })
+                
+                // return res.status(400).send({
+                //     status: 'error',
+                //     message: 'producto no agregado: Faltan datos en las propiedades'
+                // })
             }
             
             let action = await productService.addProduct(product)
