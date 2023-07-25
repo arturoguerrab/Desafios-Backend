@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import passport from 'passport'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+import { fakerES as faker } from '@faker-js/faker'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -61,6 +62,18 @@ export const AdminPass = strategy => {
             req.user = user
             next()
         })(req, res, next)
+    }
+}
+
+export const generateProduct = () => {
+    return {
+        _id: faker.database.mongodbObjectId(),
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: faker.commerce.price(),
+        stock: faker.number.int(),
+        category:faker.commerce.productMaterial(),
+        image: faker.image.urlPicsumPhotos()
     }
 }
 

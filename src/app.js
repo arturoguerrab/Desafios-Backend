@@ -3,6 +3,7 @@
     import session from 'express-session'
     import handlebars from 'express-handlebars'
     import __dirname from './utils.js'
+    import errorHandler from'./middlewares/error.middleware.js'
 
 // PASSPORT IMPORTS
     import passport from 'passport'
@@ -35,9 +36,10 @@
     app.use (express.json())
     app.use(express.static(__dirname+'/public'))
     app.use (express.urlencoded())
-
-
-// SESSION CONFIG
+    
+    
+    
+    // SESSION CONFIG
     app.use(session({
         // store: MongoStore.create({
         //     mongoUrl:'mongodb+srv://coderhouse:coderhouse@cluster-coderhouse.zdvxeq6.mongodb.net',
@@ -49,11 +51,11 @@
     }))
 
 
-// COOKIES CONFIG
+    // COOKIES CONFIG
     app.use(cookieParser())
+    
 
-
-// PASSPORT CONFIG
+    // PASSPORT CONFIG
     initializePassport()
     app.use(passport.initialize())
     app.use(passport.session())
@@ -72,7 +74,8 @@
     app.use('/', viewsRouter)
     app.use('/chat', messagesRouter)
     app.use('/session', sessionRouter)
-
+    app.use(errorHandler)
+    
 
 // MONGOOSE CONFIG
     const url = process.env.MONGO_URI
