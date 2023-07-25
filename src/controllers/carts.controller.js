@@ -1,4 +1,4 @@
-import { cartsService } from "../repository/index.js";
+import { TicketsService, cartsService } from "../repository/index.js";
 
 // CONTROLLER (POST) PARA CREAR UN NUEVO CARRITO
     export const createCart= async (req,res) => {
@@ -146,5 +146,22 @@ import { cartsService } from "../repository/index.js";
                 status: 'success',
                 message: 'producto actualizado con exito'
             })
+
+    }
+
+    export const PurchaseCart = async (req,res) => {
+
+        //---------------LOGICA----------------------
+            const cid = req.params.cid
+
+            let action = await TicketsService.createTicket(cid)
+        //---------------RESPUESTA-------------------
+            if(action==false){
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'No hay productos para agregar'
+                })}
+
+            return res.status(201).redirect('http://localhost:8080/products')
 
     }

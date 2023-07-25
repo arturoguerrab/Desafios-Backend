@@ -1,23 +1,26 @@
 <div>
-    <section>
-        <h1 class="text-5xl">Carrito {{cid}}</h1>
+    <h1 class="text-5xl">Carrito {{cid}}</h1>
+    <section class="flex">
         {{#each products}}
             <div class="bg-white drop-shadow-xl my-3 w-[330px] h-[600px] flex flex-col rounded-[20px] ">
-                <img src="{{this.thumbnails.[1]}}" class="h-3/5 rounded-b-[50px] rounded-t-[20px] border-2" alt="">
+                <img src="{{this._id.thumbnails.[1]}}" class="h-3/5 rounded-b-[50px] rounded-t-[20px] border-2" alt="">
                 <div class="h-2/5 p-5 flex flex-col gap-2 text-center justify-center">
-                    <h2 class="font-bold">{{this.title}}</h2>
-                    <p>{{this.description}}</p>
+                    <h2 class="font-bold">{{this._id.title}}</h2>
+                    <p>{{this._id.description}}</p>
                     <div class="flex text-center gap-1 mb-2">
-                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Code: {{this.code}}</p>
-                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Price: ${{this.price}}</p>
+                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Code: {{this._id.code}}</p>
+                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Price: ${{this._id.price}}</p>
                     </div>
                     <div class="flex text-center gap-1">
-                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Stock: {{this.stock}}</p>
-                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Category: {{this.category}}</p>
+                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Quantity: {{this.quantity}}</p>
+                        <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Stock: {{this._id.stock}}</p>
                     </div>
-                    <button class="bg-white hover:bg-black hover:text-white drop-shadow-md border-2 border-black rounded-[50px] m-2 p-2 w-2/4 self-center">Añadir al carrito</button>
                 </div>
             </div>
         {{/each}}
     </section>
+    <form action="http://localhost:8080/api/carts/{{cid}}/purchase" method="post">
+        <button class="bg-pink-600 text-white p-2 m-2 rounded-lg" type="submit" class="bg-white hover:bg-black hover:text-white drop-shadow-md border-2 border-black rounded-[50px] m-2 p-2 w-2/4 self-center">COMPRAR</button>
+    </form>
+    <a class="bg-pink-600 text-white p-2 m-2 rounded-lg" href="http://localhost:8080/products">volver a productos</a>
 </div>

@@ -4,11 +4,11 @@ export default class userRespository {
         this.model = model
     }
 
-    get = async(params) => {
+    getUser = async(params) => {
         return this.dao.get(params, this.model)
     }
 
-    save = async(data) => {
-        return this.dao.insert(data, this.model)
+    saveUser = async(data) => {
+        return this.dao.post(data, this.model)
     }
 }

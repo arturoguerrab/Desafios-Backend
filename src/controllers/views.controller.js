@@ -59,9 +59,9 @@ import { cartsService, productService } from "../repository/index.js";
             }
             
             let products = cart[0].products
-            let productsMap = products.map(element=>element._id)
-            console.log(productsMap);
+            
+
         //---------------RESPUESTA-------------------
-            return res.render('cart',{products:productsMap,cid:cid})
+            return res.render('cart',{products:products,cid:cid})
         
     }

@@ -1,3 +1,4 @@
+import UserDTO from "../DTOs/currentUserDTO.js";
 import { JWT_COOKIE_NAME } from "../utils.js";
 
 
@@ -56,7 +57,7 @@ import { JWT_COOKIE_NAME } from "../utils.js";
     // CONTROLLER (GET) PARA AUTHENTICATION CON JWT
         export const JWTAuth = (req, res)=>{
             return res.status(200).send({
-                user: req.user.user
+                user: new UserDTO(req.user.user)
             })
         }
 

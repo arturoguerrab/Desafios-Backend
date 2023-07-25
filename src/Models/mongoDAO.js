@@ -4,6 +4,7 @@ import userModel from './user.model.js'
 import productsModel from './products.model.js'
 import messagesModel from './messages.model.js'
 import cartsModel from './carts.model.js'
+import ticketModel from './ticket.model.js'
 
 
 export default class MongoDAO {
@@ -17,6 +18,8 @@ export default class MongoDAO {
             ['products']: productsModel,
             ['messages']: messagesModel,
             ['carts']: cartsModel,
+            ['tickets']: ticketModel,
+
         }
     }
 
