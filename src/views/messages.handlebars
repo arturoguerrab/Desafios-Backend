@@ -4,7 +4,7 @@
     user:<input type="email" name="user">
     messages:<input type="text" name="messages">
 
-    <input type="submit" value="enviar">
+    <input class="bg-pink-600 text-white p-2 m-2 rounded-lg" type="submit" value="enviar">
 
 </form>
 
@@ -12,8 +12,11 @@
     {{#each historial}}
         <hr/>
         <h2>user: {{this.user}}</h2>
-        <p><strong>mnesaje</strong>: {{this.message}}</p>
+        <p><strong>mensaje</strong>: {{this.message}}</p>
         <hr/>
         
     {{/each}}
 </section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/messages.js"></script>

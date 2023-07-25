@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
     rol:{ 
         type:String,
         default:'user'
-    }
-})
+    }}
+)
 
 mongoose.set('strictQuery',false)
 

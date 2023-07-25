@@ -40,5 +40,28 @@ export const passportCall = strategy => {
         })(req, res, next)
     }
 }
+export const UserPass = strategy => {
+    return async (req, res, next) => {
+        passport.authenticate(strategy, function(err, user, info) {
+            if (err) return next(err)
+            if (!user) return res.status(401).render('errors/base', { error: info.messages ? info.message : info.toString()})
+            if(user.user.rol=='admin') return res.status(401).render('errors/auth',{ error: 'Solo pueden acceder un User'})
+            req.user = user
+            next()
+        })(req, res, next)
+    }
+}
+
+export const AdminPass = strategy => {
+    return async (req, res, next) => {
+        passport.authenticate(strategy, function(err, user, info) {
+            if (err) return next(err)
+            if (!user) return res.status(401).render('errors/base', { error: info.messages ? info.message : info.toString()})
+            if(user.user.rol=='user') return res.status(401).render('errors/auth',{ error: 'Solo pueden acceder un Admin'})
+            req.user = user
+            next()
+        })(req, res, next)
+    }
+}
 
 export default __dirname

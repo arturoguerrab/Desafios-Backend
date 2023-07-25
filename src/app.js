@@ -96,6 +96,9 @@
             socket.on('change', (data)=>{
                 io.emit('products', data)
             })
+            socket.on('send', (data)=>{
+                io.emit('messages', data)
+            })
         })
             
     }

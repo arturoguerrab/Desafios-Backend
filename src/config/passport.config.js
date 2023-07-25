@@ -2,10 +2,10 @@ import passport from "passport"
 import local from 'passport-local'
 import passport_jwt, { ExtractJwt } from "passport-jwt"
 import { JWT_PRIVATE_KEY, createHash, extractCookie, generateToken, isValidPassword } from "../utils.js"
-import userModel from "../DAO/Models/user.model.js"
 import GitHubStrategy from 'passport-github2'
 // import userGitHubModel from "../DAO/Models/user.model.github.js"
 import dotenv from 'dotenv'
+import { cartsService, userService } from "../repository/index.js"
 dotenv.config()
 
 
@@ -20,16 +20,17 @@ const initializePassport = () => {
     }, async(req, username, password, done) => {
         const { first_name, last_name, age, email, rol} = req.body
         try {
-            const user = await userModel.findOne({ email: username })
-            if (user) {
+            const user = await userService.getUser({ email: username }) 
+            if (user!='') {
                 console.log('User already exists!')
                 return done(null, false)
             }
+            const cart = await cartsService.CreateCart()
             const newUser = {
-                first_name, last_name, age, email,rol,cart:'id',
+                first_name, last_name, age, email,rol,cart:(cart._id).toString(),
                 password: createHash(password)
             }
-            const result = await userModel.create(newUser)
+            const result = await userService.saveUser(newUser)
 
             return done(null, result)
         } catch(error) {
@@ -42,23 +43,25 @@ const initializePassport = () => {
         usernameField: 'email'
     }, async(email, password, done) => {
         try {
-            const user = await userModel.findOne({ email: email })
+            const user = await userService.getUser({ email: email })
 
-            if (!user) {
+            if (user=='') {
                 console.log('User does not exists')
                 return done(null, user)
             }
 
-            if(!user.password){
+            if(!user[0].password){
+                console.log('pasword')
                 return done(null, false)
             }
 
-            if (!isValidPassword(user, password)) return done(null, false)
+            if (!isValidPassword(user[0], password)) return done(null, false)
 
-            const token = generateToken({first_name:user.first_name, last_name:user.last_name, email:user.email, rol:user.rol})
-            user.token = token
-            return done(null, user)
+            const token = generateToken(user[0])
+            user[0].token = token
+            return done(null, user[0])
         } catch(error) {
+            console.log(error);
             done('error')
         }
     }))
@@ -75,20 +78,21 @@ const initializePassport = () => {
 
         try {
 
-            const user = await userModel.findOne({ email: profile._json.email })
-
-            if (user){
-                const token = generateToken({first_name:user.first_name, email:user.email, rol:user.rol})
-                user.token = token
-                return done(null, user)
+            const user = await userService.getUser({ email: profile._json.email })
+            if (user[0]){
+                const token = generateToken(user[0])
+                user[0].token = token
+                return done(null, user[0])
             } 
 
-            const newUser = await userModel.create({
+            const cart = await cartsService.CreateCart()
+            const newUser = await userService.saveUser({
                 first_name: profile._json.name,
-                email: profile._json.email
+                email: profile._json.email,
+                cart:(cart._id).toString()
             })
 
-            const token = generateToken({first_name:newUser.first_name, email:newUser.email, rol:newUser.rol})
+            const token = generateToken(newUser)
             newUser.token = token
 
             return done(null, newUser)
@@ -112,7 +116,7 @@ const initializePassport = () => {
     })
 
     passport.deserializeUser(async (id, done) => {
-        const user = await userModel.findById(id)
+        const user = await userService.getUser({_id:id})
         done(null, user)
     })
 
