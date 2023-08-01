@@ -1,9 +1,10 @@
 // EXPRESS IMPORTS
-    import express from 'express'
-    import session from 'express-session'
-    import handlebars from 'express-handlebars'
-    import __dirname from './utils.js'
-    import errorHandler from'./middlewares/error.middleware.js'
+import express from 'express'
+import session from 'express-session'
+import handlebars from 'express-handlebars'
+import __dirname from './utils.js'
+import errorHandler from'./middlewares/error.middleware.js'
+import logger from './logger/logger.js'
 
 // PASSPORT IMPORTS
     import passport from 'passport'
@@ -85,16 +86,16 @@
 // EXPRESS AND SOCKET SERVER RUN
     try {
         await mongoose.connect(url)
-        console.log("DB Connected");
+        logger.info("DB Connected");
         
 
-        const httpServer = app.listen(8080, () =>{console.log('Listening...') })
+        const httpServer = app.listen(8080, () =>{logger.http('Listening...') })
         const io = new Server(httpServer)
         
 
         io.on('connection', (socket)=>{
 
-            console.log('Socket client conected...')
+            logger.info('Socket client conected...')
             
             socket.on('change', (data)=>{
                 io.emit('products', data)
@@ -106,7 +107,7 @@
             
     }
     catch{
-        console.log("ERROR TO ACCESS ON DB");
+        logger.fatal("ERROR TO ACCESS ON DB");
     }
 
 
