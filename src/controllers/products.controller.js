@@ -3,6 +3,7 @@ import { productService } from "../repository/index.js";
 import CustomError from "../public/js/custom_errors.js";
 import { generateErrorInfo} from "../public/js/info.js";
 import EErros from "../public/js/enums.js";
+import logger from "../logger/logger.js";
 
 // CONTROLLER (GET) PARA TRAER TODOS LOS PRODUCTOS
     export const getProducts = async(req,res)=> {
@@ -71,10 +72,10 @@ import EErros from "../public/js/enums.js";
 
         //---------------LOGICA----------------------
             const socket= io('http://localhost:8080')
-            const product = req.body
-            let {title,description,code,price,status,stock,category,thumbnails} = product
+            let product = req.body
+            let {title,description,code,price,stock,category,thumbnails} = product
 
-            if((!title || !description || !price || !thumbnails || !code || !stock || !status || !category )){
+            if((!title || !description || !price || !thumbnails || !code || !stock || !category )){
                 CustomError.createError({
                     name: "User creation error",
                     cause: generateErrorInfo(),
@@ -87,23 +88,34 @@ import EErros from "../public/js/enums.js";
                 //     message: 'producto no agregado: Faltan datos en las propiedades'
                 // })
             }
-            
-            let action = await productService.addProduct(product)
 
-        //---------------RESPUESTA-------------------
-            if(action===true){
-                socket.emit('change' , await productService.getProducts())
+            if(req.user.user.rol == 'admin' || req.user.user.rol == 'premium'){
 
-                return res.status(201).send({
-                    status: 'success',
-                    message: 'producto agregado con exito'
+                product.owner=req.user.user.email
+                
+                let action = await productService.addProduct(product)
+
+                if(action===true){
+                    socket.emit('change' , await productService.getProducts())
+    
+                    return res.status(201).send({
+                        status: 'success',
+                        message: 'producto agregado con exito'
+                    })
+                }
+                
+                return res.status(400).send({
+                    status: 'error',
+                    message: 'producto no agregado: Propiedad <Code> en el Producto esta repetida'
                 })
             }
-            
+
             return res.status(400).send({
                 status: 'error',
-                message: 'producto no agregado: Propiedad <Code> en el Producto esta repetida'
+                message: 'producto no agregado: Usted debe ser premium o admin'
             })
+
+        //---------------RESPUESTA-------------------
         
 
     }
@@ -145,14 +157,26 @@ import EErros from "../public/js/enums.js";
         //---------------LOGICA----------------------
             const socket= io('http://localhost:8080')
             const pid = req.params.pid
-            
-            const action = await productService.deleteProduct(pid)
+            console.log(pid);
+            let action
+
+            if(req.user.user.rol == 'admin'){
+                action = await productService.deleteProduct(pid)
+            }
+
+            if(req.user.user.rol == 'premium'){
+                let product= await productService.getProducts({_id:pid})
+                action = false
+                if (product[0].owner == req.user.user.email){
+                    action = await productService.deleteProduct(pid)
+                }
+            }
 
         //---------------RESPUESTA-------------------
             if(action===false){
                 return res.status(404).send({
                     status: 'error',
-                    message: 'producto no existe'
+                    message: 'producto no existe o no es el owner'
                 })
             }
 

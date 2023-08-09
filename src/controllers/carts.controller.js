@@ -1,4 +1,4 @@
-import { TicketsService, cartsService } from "../repository/index.js";
+import { TicketsService, cartsService, productService } from "../repository/index.js";
 
 // CONTROLLER (POST) PARA CREAR UN NUEVO CARRITO
     export const createCart= async (req,res) => {
@@ -40,7 +40,16 @@ import { TicketsService, cartsService } from "../repository/index.js";
         //---------------LOGICA----------------------
             const cid = req.params.cid
             const pid = req.params.pid
-            
+            console.log(req.user.user);
+            let producto = await productService.getProducts({_id:pid})
+
+            if(producto[0].owner==req.user.user.email){
+                return res.status(400).send({
+                    status: 'error',
+                    message: `no puedes agregar un producto propio al carrito`
+                })
+            }
+
             let action = await cartsService.AddToCart(cid,pid)
         
         //---------------RESPUESTA-------------------

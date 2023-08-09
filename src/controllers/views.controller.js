@@ -65,3 +65,11 @@ import { cartsService, productService } from "../repository/index.js";
             return res.render('cart',{products:products,cid:cid})
         
     }
+
+    export const renderCreateProduct = (req, res)=>{
+        return res.render('createProduct')
+    }
+
+    export const renderDeleteProduct = (req, res)=>{
+        return res.render('deleteProduct')
+    }

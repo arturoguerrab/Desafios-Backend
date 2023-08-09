@@ -58,7 +58,7 @@ export const AdminPass = strategy => {
         passport.authenticate(strategy, function(err, user, info) {
             if (err) return next(err)
             if (!user) return res.status(401).render('errors/base', { error: info.messages ? info.message : info.toString()})
-            if(user.user.rol=='user') return res.status(401).render('errors/auth',{ error: 'Solo pueden acceder un Admin'})
+            if(user.user.rol=='user') return res.status(401).render('errors/auth',{ error: 'Solo pueden acceder un Admin o un user premium'})
             req.user = user
             next()
         })(req, res, next)

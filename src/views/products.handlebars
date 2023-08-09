@@ -1,7 +1,10 @@
 <div>
     <h1>Bienvenido {{user.first_name}} {{user.last_name}} </h1>
     <p>Rol: <strong>{{user.rol}}</strong></p>
-    <p>{{user.cart}}</p>
+    <p>{{user.cart}}</p><br>
+    <a class="bg-pink-600 text-white p-2 m-4 rounded-lg" href='http://localhost:8080/createproduct' class="bg-rose-200 rounded-[50px] drop-shadow-md">crear producto</a>
+    <a class="bg-pink-600 text-white p-2 m-4 rounded-lg" href='http://localhost:8080/deleteproduct' class="bg-rose-200 rounded-[50px] drop-shadow-md">eliminar producto</a><br>
+    <br>
     <section>
         <h2>Productos:</h2><hr>
         <section class="sm:w-11/12 mx-auto px-4 py-5 grid justify-items-center md:grid-cols-2" id="list">
@@ -20,7 +23,7 @@
                         <p class="w-2/4 p-1 bg-rose-200 rounded-[50px] drop-shadow-md">Category: {{this.category}}</p>
                     </div>
                     <form action="http://localhost:8080/api/carts/{{../user.cart}}/product/{{this._id}}" method="post">
-                        <button type="submit" class="bg-white hover:bg-black hover:text-white drop-shadow-md border-2 border-black rounded-[50px] m-2 p-2 w-2/4 self-center">Añadir al carrito</button>
+                        <button type="submit" onclick='delete({{this._id}})' class="bg-white hover:bg-black hover:text-white drop-shadow-md border-2 border-black rounded-[50px] m-2 p-2 w-2/4 self-center">Añadir al carrito</button>
                     </form>
                 </div>
             </div>
@@ -39,3 +42,4 @@
     <br>
     <a class="bg-pink-600 text-white p-2 m-4 rounded-lg" href="http://localhost:8080/session/logout"><button>logout</button></a>
 </div>
+
