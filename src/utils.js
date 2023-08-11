@@ -77,4 +77,13 @@ export const generateProduct = () => {
     }
 }
 
+export const generateTokens = (n) => {
+    return [...Array(n)].map(()=>{
+        const ramdomNum = ~~(Math.random()*36)
+        return ramdomNum.toString(36)
+    })
+    .join('')
+    .toUpperCase()
+}
+
 export default __dirname

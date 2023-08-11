@@ -5,6 +5,7 @@ import cartsRespository from './cartsRepository.js';
 import messagesRespository from './messagesRepository.js';
 import productsRespository from './productsRepository.js';
 import ticketsRespository from './ticketsRepository.js';
+import userPasswordRespository from './userPasswordRepository.js';
 import userRespository from './userRepository.js';
 
 let dao
@@ -20,3 +21,4 @@ export const productService = new productsRespository(dao,'products')
 export const cartsService = new cartsRespository(dao,'carts')
 export const messagesService = new messagesRespository(dao,'messages')
 export const TicketsService = new ticketsRespository(dao,'tickets')
+export const passwordService = new userPasswordRespository(dao,'userPassword')
