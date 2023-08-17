@@ -5,7 +5,8 @@ import handlebars from 'express-handlebars'
 import __dirname from './utils.js'
 import errorHandler from'./middlewares/error.middleware.js'
 import logger from './logger/logger.js'
-
+import swaggerJSDoc from 'swagger-jsdoc'
+import  SwaggerUiExpress  from 'swagger-ui-express'
 // PASSPORT IMPORTS
     import passport from 'passport'
     import initializePassport from './config/passport.config.js'
@@ -28,6 +29,7 @@ import logger from './logger/logger.js'
     import viewsRouter from './Router/views.router.js'
     import messagesRouter from './Router/messages.router.js'
     import sessionRouter from './Router/session.router.js'
+
 
 // <-------------------------IMPORTS END-------------------------------------->
 
@@ -67,7 +69,21 @@ import logger from './logger/logger.js'
     app.set('views',__dirname+'/views')
     app.set('view engine', 'handlebars')
     
+//SWAGGER
 
+const swaggerOptions = {
+    definition:{
+        openapi:'3.0.1',
+        info:{
+            title: 'Documentacion de api Coderhouse',
+            description: 'Alumno Arturo Guerra'
+        }
+    },
+    apis: ['src/docs/*.yaml']
+}
+
+const specs = swaggerJSDoc(swaggerOptions)
+app.use('/docs', SwaggerUiExpress.serve, SwaggerUiExpress.setup(specs))
 
 // ROUTING CONFIG
     app.use('/api/products', productRouter)
