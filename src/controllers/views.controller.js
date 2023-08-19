@@ -1,5 +1,6 @@
 
 import { cartsService, productService } from "../repository/index.js";
+import { passwordService } from "../repository/index.js";
 
 // CONTROLLER (GET) PARA RENDERIZAR TODOS LOS PRODUCTOS
     export const renderProducts = async (req,res)=>{ 
@@ -66,10 +67,31 @@ import { cartsService, productService } from "../repository/index.js";
         
     }
 
-    export const renderCreateProduct = (req, res)=>{
+// CONTROLLER (GET) PARA RENDERIZAR LA CREACION DE PRODUCTOS
+    export const renderCreateProduct = async (req, res)=>{
         return res.render('createProduct')
     }
 
-    export const renderDeleteProduct = (req, res)=>{
+// CONTROLLER (GET) PARA RENDERIZAR ELIMINAR UN PRODUCTO
+    export const renderDeleteProduct = async (req, res)=>{
         return res.render('deleteProduct')
     }
+
+// CONTROLLER (GET) PARA RENDERIZAR FORGET PASSWORD 
+    export const renderForgetPassword = async (req,res)=>{
+        return res.render('forgetPassword')
+    }
+
+// CONTROLLER (GET) PARA RENDERIZAR VERIFICAR TOKEN
+    export const renderVerifyToken = async (req,res)=>{
+
+        const userPassword = await passwordService.getUserPassword({token:req.params.token})
+
+        if(userPassword == ''){
+            return res.status(404).json({status:'error', message:'Token no valido / el token a expirado'})
+        }
+
+        const user = userPassword[0].email
+        return res.render(`sessions/reset-password`,{user})
+
+}
