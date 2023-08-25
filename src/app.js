@@ -100,14 +100,14 @@
     
 
 // MONGOOSE CONFIG
-    const url = process.env.MONGO_URI
+    // const url = process.env.MONGO_URI
     mongoose.set("strictQuery",false)
 
 
 // EXPRESS AND SOCKET SERVER RUN
     try {
-        await mongoose.connect(url)
-        logger.info("DB Connected");
+        // await mongoose.connect(url)
+        // logger.info("DB Connected");
         
 
         const httpServer = app.listen(8080, () =>{logger.http('Listening...') })
