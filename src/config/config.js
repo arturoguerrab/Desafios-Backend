@@ -6,6 +6,5 @@ export default {
         persistence: process.env.PERSISTENCE
     },
     mongo: {
-        url: process.env.MONGO_URI_DEV
-    }
-}
+        url: process.env.MONGO_URI
+}}

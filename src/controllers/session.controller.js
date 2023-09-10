@@ -1,4 +1,5 @@
 import UserDTO from "../DTOs/currentUserDTO.js";
+import { userService } from "../repository/index.js";
 import { JWT_COOKIE_NAME } from "../utils.js";
 
 
@@ -36,7 +37,8 @@ import { JWT_COOKIE_NAME } from "../utils.js";
             }
             
             // req.session.user = {first_name: req.user.first_name, last_name: req.user.last_name, rol:req.user.rol}
-            
+            await userService.updateUser(req.user._id,{last_connection: new Date()})
+
             return res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
         }
 
@@ -73,5 +75,8 @@ import { JWT_COOKIE_NAME } from "../utils.js";
             //         res.redirect('/session/login')
             //     }
             // })
+            // await userService.updateUser(req.user._id,{last_connection: new Date()})
+            
+            await userService.updateUser(req.user[0]._id,{last_connection: new Date()})
             return res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
         }
