@@ -12,8 +12,19 @@ const userSchema = new mongoose.Schema({
     rol:{ 
         type:String,
         default:'user'
-    }}
+    },
+    documents:{
+        type:Array,
+        default:[]
+
+    },
+    last_connection:{
+        type:Date , 
+        default:Date.now
+    },
+}
 )
+
 
 mongoose.set('strictQuery',false)
 
