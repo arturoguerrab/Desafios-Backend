@@ -105,12 +105,13 @@
 
 
 // EXPRESS AND SOCKET SERVER RUN
+    const port = process.env.PORT || 8080;
     try {
         // await mongoose.connect(url)
         // logger.info("DB Connected");
         
 
-        const httpServer = app.listen(8080, () =>{logger.http('Listening...') })
+        const httpServer = app.listen(port ,"0.0.0.0", () =>{logger.http('Listening...') })
         const io = new Server(httpServer)
         
 
