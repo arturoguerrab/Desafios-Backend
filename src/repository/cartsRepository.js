@@ -25,7 +25,9 @@ export default class cartsRespository {
         const cart = await this.dao.get({_id:cId}, this.model)
 
         if(product != '' && cart != ''){
-            let exist = cart[0].products.find(element=>element._id._id ==pId)
+            console.log(cart[0]);
+            
+            let exist = cart[0].products.find(element=>element._id._id == pId)
 
             if(!exist){
                 let obj = {_id:pId, quantity: 1}

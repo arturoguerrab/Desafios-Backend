@@ -2,25 +2,43 @@ import { passwordService, userService } from "../repository/index.js";
 import { generateTokens, createHash} from "../utils.js";
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
+import UserDTO from "../DTOs/currentUserDTO.js";
     dotenv.config()
 
 
 // CONTROLLER (GET) PARA CAMBIAR EL ROL DE USUARIO
-    export const changeUserRol = async (req,res)=>async (req,res)=>{
+    export const changeUserRol = async (req,res)=>{
         const uId = req.params.uid
 
         const user = await userService.getUser({_id:uId})
 
         if(user[0].rol == 'premium'){
             await userService.updateUser(uId,{rol:'user'})
-            return res.status(200).send({status: 'success', message: 'Usuario modificado con exito de premium a user'})
+            return res.redirect('http://localhost:8080/users')
         }
         if(user[0].rol == 'user'){
             await userService.updateUser(uId,{rol:'premium'})
-            return res.status(200).send({status: 'success', message: 'Usuario modificado con exito de user a premium'})
+            return res.redirect('http://localhost:8080/users')
         }
 
         return res.status(400).send({status:'error', message:'Los admin no se puden modificar'})
+    }
+
+// CONTROLLER (GET) PARA CAMBIAR EL ROL DE USUARIO
+    export const getUsers = async (req,res)=>{
+
+        const users = await userService.getUser()
+
+        if(users == ''){
+            return res.status(400).send({status:'error', message:'No hay usuarios registrados'})
+        }
+
+        const usersDTO = []
+        users.forEach(element => {
+            usersDTO.push(new UserDTO(element))
+        });
+
+        return res.status(200).send({status: 'success', users: usersDTO })
     }
 
 // CONTROLLER (POST) PARA ENVIAR EL CORREO PARA REESTABLECER LA CONTRASEÑA

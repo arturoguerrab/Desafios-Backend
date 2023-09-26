@@ -1,5 +1,5 @@
 
-import { cartsService, productService } from "../repository/index.js";
+import { cartsService, productService, userService } from "../repository/index.js";
 import { passwordService } from "../repository/index.js";
 
 // CONTROLLER (GET) PARA RENDERIZAR TODOS LOS PRODUCTOS
@@ -93,5 +93,16 @@ import { passwordService } from "../repository/index.js";
 
         const user = userPassword[0].email
         return res.render(`sessions/reset-password`,{user})
+
+}
+
+// CONTROLLER (GET) PARA RENDERIZAR TODOS LOS PRODUCTOS EN TIEMPO REAL CON SOCKET
+export const renderUsers = async (req,res)=>{
+
+    //---------------LOGICA----------------------
+        const users = await userService.getUser()
+
+    //---------------RESPUESTA-------------------
+        return res.render('users',{users:users})
 
 }

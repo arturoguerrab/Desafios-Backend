@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { AdminPass, passportCall } from "../utils.js";
-import { realTimeProducts, renderCart, renderCreateProduct, renderDeleteProduct, renderForgetPassword, renderPaginatedProducts, renderProducts, renderVerifyToken } from "../controllers/views.controller.js";
+import { realTimeProducts, renderCart, renderCreateProduct, renderDeleteProduct, renderForgetPassword, renderPaginatedProducts, renderProducts, renderUsers, renderVerifyToken } from "../controllers/views.controller.js";
 
 
 const router = Router()
 
 
 router.get('/', renderProducts)
+
+router.get('/users', renderUsers)
 
 router.get('/realtimeproducts', realTimeProducts)
 

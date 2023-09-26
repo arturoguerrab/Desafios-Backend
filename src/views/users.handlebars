@@ -1,0 +1,12 @@
+<h1>users</h1>
+
+
+{{#each users}}
+    <h2>Usuario: {{this.first_name}}</h2>
+    <p>Email: {{this.email}}</p>
+    <p>Rol:{{this.rol}}</p>
+    </br>
+    <a class="bg-pink-600 text-white p-2 m-2 rounded-lg" href="http://localhost:8080/api/users/premium/{{this._id}}">change Rol</a>
+    </br></br> <hr>
+
+{{/each}}

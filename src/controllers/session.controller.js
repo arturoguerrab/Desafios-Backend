@@ -76,7 +76,6 @@ import { JWT_COOKIE_NAME } from "../utils.js";
             //     }
             // })
             // await userService.updateUser(req.user._id,{last_connection: new Date()})
-            
             await userService.updateUser(req.user[0]._id,{last_connection: new Date()})
             return res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
         }
