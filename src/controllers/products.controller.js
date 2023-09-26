@@ -1,9 +1,12 @@
 import { io } from "socket.io-client"
-import { productService } from "../repository/index.js";
+import { productService, userService } from "../repository/index.js";
 import CustomError from "../public/js/custom_errors.js";
 import { generateErrorInfo} from "../public/js/info.js";
 import EErros from "../public/js/enums.js";
 import logger from "../logger/logger.js";
+import nodemailer from 'nodemailer'
+import dotenv from 'dotenv'
+dotenv.config()
 
 // CONTROLLER (GET) PARA TRAER TODOS LOS PRODUCTOS
     export const getProducts = async(req,res)=> {
@@ -162,13 +165,57 @@ import logger from "../logger/logger.js";
 
             if(req.user.user.rol == 'admin'){
                 action = await productService.deleteProduct(pid)
+                let product = await productService.getProducts({_id:pid})
+                let user = await userService.getUser({email:product[0].owner})
+                if(user[0].rol == 'premium'){
+                    const mailerConfig = {
+                        service: 'gmail',
+                        auth:{user: process.env.MAILER_USER, pass:process.env.MAILER_PASSWORD }
+                    }
+                
+                    let transporter = nodemailer.createTransport(mailerConfig)
+                    let messsage ={
+                        from:process.env.MAILER_USER,
+                        to:user[0].email,
+                        subject:'Se elimino tu Producto',
+                        html: `<h1>AVISO - SE ELIMINO TU PRODUCTO</h1><p>Se elimino el producto ${product[0].title}</p>`
+                    }
+                
+                    try {
+                        await transporter.sendMail(messsage)
+                    } catch (error) {
+                        res.status(500).json({status: 'error', error: error.message})
+                    }
+                }
+                
             }
 
             if(req.user.user.rol == 'premium'){
-                let product= await productService.getProducts({_id:pid})
+                let product = await productService.getProducts({_id:pid})
                 action = false
                 if (product[0].owner == req.user.user.email){
                     action = await productService.deleteProduct(pid)
+                    let user = await userService.getUser({email:product[0].owner})
+                    if(user[0].rol == 'premium'){
+                        const mailerConfig = {
+                            service: 'gmail',
+                            auth:{user: process.env.MAILER_USER, pass:process.env.MAILER_PASSWORD }
+                        }
+                    
+                        let transporter = nodemailer.createTransport(mailerConfig)
+                        let messsage ={
+                            from:process.env.MAILER_USER,
+                            to:user[0].email,
+                            subject:'Se elimino tu Producto',
+                            html: `<h1>AVISO - SE ELIMINO TU PRODUCTO</h1><p>Se elimino el prodcuto ${product[0].title}</p>`
+                        }
+                    
+                        try {
+                            await transporter.sendMail(messsage)
+                        } catch (error) {
+                            res.status(500).json({status: 'error', error: error.message})
+                        }
+                    }
                 }
             }
 

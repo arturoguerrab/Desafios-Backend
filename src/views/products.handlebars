@@ -10,7 +10,7 @@
         <section class="sm:w-11/12 mx-auto px-4 py-5 grid justify-items-center md:grid-cols-2" id="list">
             {{#each products.docs}}
             <div class="bg-white drop-shadow-xl my-3 w-[330px] h-[600px] flex flex-col rounded-[20px] ">
-                <img src="{{this.thumbnails.[1]}}" class="h-3/5 rounded-b-[50px] rounded-t-[20px] border-2" alt="">
+                <img src="{{this.thumbnails.[0]}}" class="h-3/5 rounded-b-[50px] rounded-t-[20px] border-2" alt="">
                 <div class="h-2/5 p-5 flex flex-col gap-2 text-center justify-center">
                     <h2 class="font-bold">{{this.title}}</h2>
                     <p>{{this.description}}</p>

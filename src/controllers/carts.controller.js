@@ -40,7 +40,6 @@ import { TicketsService, cartsService, productService } from "../repository/inde
         //---------------LOGICA----------------------
             const cid = req.params.cid
             const pid = req.params.pid
-            console.log(req.user.user);
             let producto = await productService.getProducts({_id:pid})
 
             if(producto[0].owner==req.user.user.email){
@@ -60,10 +59,7 @@ import { TicketsService, cartsService, productService } from "../repository/inde
                 })
             }
 
-            return res.status(201).send({
-                status: 'success',
-                message: 'Producto agregado al carrito con exito'
-            })
+            return res.redirect(`http://localhost:8080/carts/${cid}`)
     }
 
 // CONTROLLER (DELETE) PARA ELIMINAR UN PRODUCTO EN EL CARRITO
